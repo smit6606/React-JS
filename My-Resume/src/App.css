@@ -6,55 +6,74 @@
 
 body {
   font-family: "Segoe UI", sans-serif;
-  background: #f9f9fb;
-  color: #2d2d2d;
+  background: #e9eef5;
+  color: #1a1a1a;
   line-height: 1.6;
 }
 
 .resume {
-  max-width: 800px;
-  margin: 3rem auto;
-  padding: 2rem;
+  max-width: 860px;
+  margin: 48px auto;
+  padding: 40px;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
   animation: fadeIn 1s ease-in-out;
 }
 
 header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 40px;
   animation: slideDown 1s ease-in-out;
 }
 
 h1 {
-  font-size: 2.5rem;
-  margin: 0;
-  color: #2c3e50;
+  font-size: 48px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #007cf0, #00dfd8);
+  display: inline-block;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: fadeInName 1.2s ease-in-out;
 }
 
 h2 {
-  font-size: 1.1rem;
-  color: #7f8c8d;
-  margin-top: 0.2rem;
+  font-size: 20px;
+  color: #3b3b3b;
+  margin-top: 3px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
 }
 
-header a {
-  color: #2980b9;
+header p {
+  margin-top: 10px;
+  color: #555;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+header a,
+a {
+  color: #007cf0;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
 }
 
-header a:hover {
+header a:hover,
+a:hover {
   text-decoration: underline;
-  color: #1c5980;
+  color: #005fa3;
   letter-spacing: 0.5px;
 }
 
 .columns {
   display: flex;
-  gap: 2rem;
+  gap: 32px;
   flex-wrap: wrap;
 }
 
@@ -64,60 +83,91 @@ header a:hover {
 }
 
 section {
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
   animation: fadeUp 0.8s ease;
 }
 
 h3 {
-  color: #34495e;
-  margin-bottom: 0.5rem;
+  color: #1f3b57;
+  margin-bottom: 8px;
+  font-size: 20px;
 }
 
 h4 {
-  margin-bottom: 0.3rem;
-  color: #555;
+  margin-bottom: 5px;
+  color: #444;
+  font-weight: 600;
 }
 
 ul {
-  padding-left: 1.2rem;
+  padding-left: 22px;
+  margin-top: 8px;
 }
 
-a {
-  color: #2980b9;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-a:hover {
-  color: #1c5980;
-  text-decoration: underline;
+ul li {
+  margin-bottom: 6px;
 }
 
 .project {
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
 }
 
-.print-btn {
-  position: fixed;
-  top: 20px;
-  right: 30px;
-  background: #2980b9;
+.print-btn-bottom {
+  display: block;
+  margin: 40px auto 0 auto;
+  background: #007cf0;
   color: #ffffff;
   border: none;
   border-radius: 8px;
-  padding: 10px 16px;
+  padding: 12px 20px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  z-index: 999;
+  box-shadow: 0 4px 12px rgba(0, 124, 240, 0.3);
+  animation: fadeIn 0.8s ease-in-out;
 }
 
-.print-btn:hover {
-  background: #1c5980;
-  color: #fff;
+.print-btn-bottom:hover {
+  background: #005fa3;
   transform: scale(1.05);
 }
 
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+
+  .resume {
+    margin: 0 !important;
+    padding: 48px !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    page-break-inside: avoid;
+  }
+
+  .print-btn-bottom {
+    display: none !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -151,8 +201,13 @@ a:hover {
   }
 }
 
-@media print {
-  .print-btn {
-    display: none;
+@keyframes fadeInName {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

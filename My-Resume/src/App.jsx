@@ -1,26 +1,41 @@
 import "./App.css";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [showButton, setShowButton] = useState(false);
+
   const handlePrint = () => window.print();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const bottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 50;
+      setShowButton(bottom);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="resume">
-      <button className="print-btn" onClick={handlePrint}>
-        🖨️ Print
-      </button>
-
       <header>
         <h1>Smit Garala</h1>
         <h2>Full Stack Web Developer</h2>
         <p>
           📞 8320436638 | 📧 smeetgarala6606@gmail.com | 💻{" "}
-          <a href="https://github.com/smit6606" target="_blank">
+          <a
+            href="https://github.com/smit6606"
+            target="_blank"
+            rel="noreferrer"
+          >
             GitHub
           </a>{" "}
           | 🔗{" "}
           <a
             href="https://linkedin.com/in/smit-garala-28956b344/"
             target="_blank"
+            rel="noreferrer"
           >
             LinkedIn
           </a>
@@ -45,15 +60,15 @@ function App() {
           <section>
             <h3>Education</h3>
             <p>
-              <strong>B.E.</strong> – C.K. Pithawala College of Engineering,
-              Surat
+              <strong>B.E. in Computer</strong> – C.K. Pithawala College of
+              Engineering, Surat
               <br />
               <em>2021 – 2025</em>
             </p>
             <p>
               <strong>H.S.C.</strong> – C.S. Vidya Bharti, Surat
               <br />
-              <em>Completed: 2021</em>
+              <em>2021</em>
             </p>
           </section>
 
@@ -95,7 +110,11 @@ function App() {
                 Complete service management system with OTP login, Stripe
                 payment, and role-based dashboards.
               </p>
-              <a href="https://github.com/smit6606/FueMech" target="_blank">
+              <a
+                href="https://github.com/smit6606/FueMech"
+                target="_blank"
+                rel="noreferrer"
+              >
                 GitHub ↗
               </a>
             </div>
@@ -108,6 +127,7 @@ function App() {
               <a
                 href="https://github.com/smit6606/BeyondNodeJS"
                 target="_blank"
+                rel="noreferrer"
               >
                 GitHub ↗
               </a>
@@ -127,6 +147,12 @@ function App() {
           </section>
         </div>
       </div>
+
+      {showButton && (
+        <button className="print-btn-bottom" onClick={handlePrint}>
+          🖨️ Print
+        </button>
+      )}
     </div>
   );
 }
