@@ -51,9 +51,10 @@ Students-App/
 
 ## 📸 Preview
 
-| Student Registration Form       | Form Submission                     |
-| ------------------------------- | ----------------------------------- |
-| ![Form UI](./public/formUI.png) | ![Form Submit](./public/submit.png) |
+| Student Registration Form       | Form Submission                     | Table Output                       |
+| ------------------------------- | ----------------------------------- | ---------------------------------- |
+| ![Form UI](./public/formUI.png) | ![Form Submit](./public/submit.png) | ![Table Output](./public/tableoutput.png) |
+
 
 ---
 
