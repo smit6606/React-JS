@@ -1,104 +1,123 @@
-# 🎓 Students App
+# 🎓 Students-App
 
-A modern **React + TypeScript** project built with **Vite** and styled using **TailwindCSS**.
-This app contains a **Student Registration Form** with validation, city dropdown, gender & hobbies selection, and a clean responsive UI.
+A modern **React + TypeScript** student registration demo built with **Vite** and styled using **Tailwind CSS**. The app demonstrates a clean responsive form UI with validations, localStorage persistence for registered students, a theme toggle (light/dark), and a responsive data table with actions.
 
 ---
 
-## 📂 Project Structure
+## 🔖 Quick summary
+
+* **Stack:** React + TypeScript, Vite, Tailwind CSS
+* **Features:** form validation, live validation after first submit, theme toggle (light/dark), persist students to `localStorage`, editable table with **Edit** and **Delete** actions hooks.
+
+---
+
+## 📁 Project structure
 
 ```
-
 Students-App/
-│── node_modules/           # Installed dependencies
-│── public/                 # Static assets (favicon, images, etc.)
-│
-│── src/
-│ ├── assets/               # Project images, logos, etc.
-│ ├── components/           # Reusable UI components
-│ │ ├── navbar.tsx
-│ │ └── studentForm.tsx
-│ ├── App.tsx               # Root component
-│ ├── index.css             # Global styles
-│ ├── main.tsx              # App entry point
-│ └── vite-env.d.ts         # Vite environment types
-│
-│── .gitignore
-│── eslint.config.js        # ESLint configuration
-│── index.html              # Main HTML file
-│── package.json            # Project metadata & dependencies
-│── package-lock.json
-│── README.md               # Documentation
-│── tsconfig.json           # TypeScript configuration
-│── tsconfig.app.json
-│── tsconfig.node.json
-│── vite.config.ts          # Vite configuration
-
+├─ node_modules/
+├─ public/                  # static assets
+│  ├─ form-ui.png
+│  └─ table-output.png
+├─ src/
+│  ├─ assets/               # project images 
+│  │  ├─ navbar.tsx
+│  │  └─ studentForm.tsx
+│  ├─ App.tsx
+│  ├─ main.tsx
+│  └─ index.css
+├─ .gitignore
+├─ index.html
+├─ package.json
+├─ tsconfig.json
+├─ vite.config.ts
+└─ README.md
 ```
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-- ✅ Built with **React + TypeScript**
-- 🎨 Styled with **TailwindCSS**
-- 📱 Fully responsive UI
-- ✨ Clean form design with validations
-- 📂 Modular and maintainable folder structure
-- ⚡ Powered by **Vite** for fast development
+* Responsive registration form with floating labels
+* Validation rules:
+
+  * First / Last name: 2–10 letters
+  * Email: standard email format
+  * Phone: 10 digits starting 6–9 (repeated-digit guard)
+  * Class: numeric 1–12
+  * Division: single uppercase A–Z
+  * Hobby: at least one (or `No Choice`)
+  * Address: 10–200 characters (letters, numbers, commas, slashes)
+  * City: required selection
+* Form shows errors for all fields after the first submit attempt.
+* After the first submit, fields validate live while user types and errors disappear as inputs become valid.
+* Registered students are saved to `localStorage` and displayed in a theme-matching table.
+* Table includes **Edit** and **Delete** action buttons (UI ready)
+* Light / Dark theme toggle implemented in the navbar
 
 ---
 
-## 📸 Preview
+## 📸 Screenshots
 
-| Student Registration Form       | Form Submission                     | Table Output                       |
-| ------------------------------- | ----------------------------------- | ---------------------------------- |
-| ![Form UI](./public/formUI.png) | ![Form Submit](./public/submit.png) | ![Table Output](./public/tableoutput.png) |
+Place screenshots in the `public/` folder and reference them below (or adjust the paths to your location):
+
+|                     Form (light) | Form (dark)                                |
+| -------------------------------: | :----------------------------------------- |
+| ![Form UI](./public/form-ui.png) | ![Form UI Dark](./public/form-ui-dark.png) |
+
+|                              Table (light) | Table (dark)                                         |
+| -----------------------------------------: | :--------------------------------------------------- |
+| ![Table Output](./public/table-output-light.png) | ![Table Output Dark](./public/table-output.png) |
+
+|                     Form + Table | Local Storage View                       |
+| -------------------------------: | :--------------------------------------- |
+| ![Form and Table](./public/form%20&%20table.png) | ![Local Storage](./public/local-storage.png) |
 
 
 ---
 
-## 🛠️ Installation & Setup
+## 🚀 Getting started (run locally)
 
-Follow these steps to run the project locally:
+Make sure you have Node.js (v16+) and npm installed.
 
 ```bash
-# 1️⃣ Clone the repository
-git clone https://github.com/your-username/student-form.git
+# 1. clone the repo
+git clone https://github.com/your-username/Students-App.git
+cd Students-App
 
-# 2️⃣ Navigate to project folder
-cd student-form
-
-# 3️⃣ Install dependencies
+# 2. install dependencies
 npm install
 
-# 4️⃣ Start development server
+# 3. run dev server
 npm run dev
-The app will be running at: http://localhost:5173/
 
+# open http://localhost:5173
 ```
 
----
+Common npm scripts (from `package.json`):
 
-## 📦 Dependencies
-
-React (UI Library)
-
-TypeScript (Static typing)
-
-TailwindCSS (Styling)
-
-Vite (Build tool)
+* `npm run dev` — start Vite dev server
+* `npm run build` — build for production
+* `npm run preview` — locally preview the production build
 
 ---
 
-## 📑 License
+## ⚙️ How the validation flow works (short)
 
-This project is licensed under the [MIT License](../LICENSE).
+1. On the first submit attempt, the form validates all fields and displays errors for every invalid input.
+2. After that first submit, the app enables "live" validation for each field — as the user types valid input the corresponding error is removed immediately.
+3. This keeps the UX friendly while still forcing the user to fix all fields before data is accepted.
 
 ---
 
-## ✨ Author
+## 🧾 License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT)
+
+---
+
+## 👤 Author
+
 
 **👤 Smit Garala**  
 🚀 Full-Stack Developer
@@ -107,5 +126,7 @@ This project is licensed under the [MIT License](../LICENSE).
 - 📬 Email: smeetgarala6606@gmail.com
 - 🐙 GitHub: [smit6606](https://github.com/smit6606)
 - 💼 LinkedIn: [Smit Garala](https://www.linkedin.com/in/smit-garala-28956b344/)
+
+
 
 ---
