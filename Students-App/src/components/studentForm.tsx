@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 /** Reusable input component */
 const InputField = ({
@@ -12,7 +14,8 @@ const InputField = ({
   textarea = false,
   theme,
 }: any) => {
-  const base = "peer block w-full rounded-xl px-3 pt-5 pb-2 outline-none transition";
+  const base =
+    "peer block w-full rounded-xl px-3 pt-5 pb-2 outline-none transition";
   const light = "border border-gray-300 bg-white text-gray-900";
   const dark = "border border-gray-600 bg-gray-800 text-white";
   const errorCls = error ? "border-red-500 ring-1 ring-red-500" : "";
@@ -27,7 +30,9 @@ const InputField = ({
           onChange={onChange}
           autoComplete="new-password"
           placeholder=" "
-          className={`${base} min-h-[120px] ${theme === "light" ? light : dark} ${errorCls}`}
+          className={`${base} min-h-[120px] ${
+            theme === "light" ? light : dark
+          } ${errorCls}`}
         />
       ) : (
         <input
@@ -92,6 +97,8 @@ export default function StudentForm({ theme }: StudentFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
 
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+
   const allCity: string[] = [
     "Ahmedabad",
     "Amreli",
@@ -130,11 +137,17 @@ export default function StudentForm({ theme }: StudentFormProps) {
     const nameRegex = /^[A-Za-z]{2,10}$/; // 2–10 letters
     switch (field) {
       case "firstName":
-        return nameRegex.test(value) ? "" : "First name must be 2–10 letters only.";
+        return nameRegex.test(value)
+          ? ""
+          : "First name must be 2–10 letters only.";
       case "lastName":
-        return nameRegex.test(value) ? "" : "Last name must be 2–10 letters only.";
+        return nameRegex.test(value)
+          ? ""
+          : "Last name must be 2–10 letters only.";
       case "email":
-        return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/i.test(value) ? "" : "Enter a valid email.";
+        return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/i.test(value)
+          ? ""
+          : "Enter a valid email.";
       case "phone":
         return /^[6-9]\d{9}$/.test(value) && !/^(\d)\1{9}$/.test(value)
           ? ""
@@ -142,16 +155,24 @@ export default function StudentForm({ theme }: StudentFormProps) {
       case "className": {
         if (!String(value).trim()) return "Class required.";
         const n = Number(value);
-        return !isNaN(n) && n >= 1 && n <= 12 ? "" : "Class must be between 1 and 12.";
+        return !isNaN(n) && n >= 1 && n <= 12
+          ? ""
+          : "Class must be between 1 and 12.";
       }
       case "division":
-        return /^[A-Z]$/.test(value) ? "" : "Division must be a single capital letter (A–Z).";
+        return /^[A-Z]$/.test(value)
+          ? ""
+          : "Division must be a single capital letter (A–Z).";
       case "gender":
         return value ? "" : "Select gender.";
       case "hobby":
-        return Array.isArray(value) && value.length > 0 ? "" : "Select at least one hobby.";
+        return Array.isArray(value) && value.length > 0
+          ? ""
+          : "Select at least one hobby.";
       case "address":
-        return /^[A-Za-z0-9,\/\s]{10,200}$/.test(String(value).trim()) ? "" : "Address must be 10–200 characters.";
+        return /^[A-Za-z0-9,\/\s]{10,200}$/.test(String(value).trim())
+          ? ""
+          : "Address must be 10–200 characters.";
       case "city":
         return value ? "" : "Select a city.";
       default:
@@ -180,6 +201,22 @@ export default function StudentForm({ theme }: StudentFormProps) {
       next = checked ? [...next, value] : next.filter((el) => el !== value);
     }
     handleChange("hobby", next, setHobby);
+  };
+
+  const resetForm = () => {
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPhone("");
+    setClassName("");
+    setDivision("");
+    setGender("");
+    setHobby([]);
+    setCity("");
+    setAddress("");
+    setErrors({});
+    setSubmitted(false);
+    setEditIndex(null);
   };
 
   const handleSubmit = (event: any) => {
@@ -221,22 +258,54 @@ export default function StudentForm({ theme }: StudentFormProps) {
       address,
     };
 
-    const updated = [...students, newStudent];
+    let updated: Student[];
+    if (editIndex !== null) {
+      updated = [...students];
+      updated[editIndex] = newStudent;
+      toast.success("Student updated successfully!");
+    } else {
+      updated = [...students, newStudent];
+      toast.success("Student added successfully!");
+    }
+
     setStudents(updated);
     localStorage.setItem("students", JSON.stringify(updated));
+    resetForm();
+  };
 
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPhone("");
-    setClassName("");
-    setDivision("");
-    setGender("");
-    setHobby([]);
-    setCity("");
-    setAddress("");
-    setErrors({});
-    setSubmitted(false);
+  const handleDelete = (index: number) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this student?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const updated = students.filter((_, i) => i !== index);
+        setStudents(updated);
+        localStorage.setItem("students", JSON.stringify(updated));
+        Swal.fire("Deleted!", "Student has been deleted.", "success");
+      }
+    });
+  };
+
+  const handleEdit = (index: number) => {
+    const student = students[index];
+    setFirstName(student.firstName);
+    setLastName(student.lastName);
+    setEmail(student.email);
+    setPhone(student.phone);
+    setClassName(student.className);
+    setDivision(student.division);
+    setGender(student.gender);
+    setHobby(student.hobby);
+    setCity(student.city);
+    setAddress(student.address);
+    setEditIndex(index);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -248,7 +317,9 @@ export default function StudentForm({ theme }: StudentFormProps) {
       <form
         onSubmit={handleSubmit}
         className={`shadow-2xl rounded-2xl p-10 w-full max-w-4xl space-y-6 border ${
-          theme === "light" ? "bg-white border-gray-200" : "bg-gray-800 border-gray-700"
+          theme === "light"
+            ? "bg-white border-gray-200"
+            : "bg-gray-800 border-gray-700"
         }`}
       >
         <h2
@@ -296,7 +367,9 @@ export default function StudentForm({ theme }: StudentFormProps) {
             label="Email"
             type="email"
             value={email}
-            onChange={(e: any) => handleChange("email", e.target.value, setEmail)}
+            onChange={(e: any) =>
+              handleChange("email", e.target.value, setEmail)
+            }
             error={errors.email}
             theme={theme}
           />
@@ -306,7 +379,11 @@ export default function StudentForm({ theme }: StudentFormProps) {
             type="tel"
             value={phone}
             onChange={(e: any) =>
-              handleChange("phone", e.target.value.replace(/\D/g, "").slice(0, 10), setPhone)
+              handleChange(
+                "phone",
+                e.target.value.replace(/\D/g, "").slice(0, 10),
+                setPhone
+              )
             }
             inputMode="numeric"
             error={errors.phone}
@@ -319,7 +396,9 @@ export default function StudentForm({ theme }: StudentFormProps) {
             id="className"
             label="Class"
             value={className}
-            onChange={(e: any) => handleChange("className", e.target.value, setClassName)}
+            onChange={(e: any) =>
+              handleChange("className", e.target.value, setClassName)
+            }
             error={errors.className}
             theme={theme}
           />
@@ -330,7 +409,10 @@ export default function StudentForm({ theme }: StudentFormProps) {
             onChange={(e: any) =>
               handleChange(
                 "division",
-                e.target.value.replace(/[^A-Za-z]/g, "").slice(0, 1).toUpperCase(),
+                e.target.value
+                  .replace(/[^A-Za-z]/g, "")
+                  .slice(0, 1)
+                  .toUpperCase(),
                 setDivision
               )
             }
@@ -347,7 +429,9 @@ export default function StudentForm({ theme }: StudentFormProps) {
           >
             <legend
               className={`px-1 text-sm ${
-                theme === "light" ? "bg-white text-gray-600" : "bg-gray-800 text-gray-300"
+                theme === "light"
+                  ? "bg-white text-gray-600"
+                  : "bg-gray-800 text-gray-300"
               }`}
             >
               Gender
@@ -360,13 +444,17 @@ export default function StudentForm({ theme }: StudentFormProps) {
                     name="gender"
                     value={g}
                     checked={gender === g}
-                    onChange={(e) => handleChange("gender", e.target.value, setGender)}
+                    onChange={(e) =>
+                      handleChange("gender", e.target.value, setGender)
+                    }
                   />
                   {g}
                 </label>
               ))}
             </div>
-            {errors.gender && <p className="text-red-500 text-sm mt-2">{errors.gender}</p>}
+            {errors.gender && (
+              <p className="text-red-500 text-sm mt-2">{errors.gender}</p>
+            )}
           </fieldset>
 
           <fieldset
@@ -376,7 +464,9 @@ export default function StudentForm({ theme }: StudentFormProps) {
           >
             <legend
               className={`px-1 text-sm ${
-                theme === "light" ? "bg-white text-gray-600" : "bg-gray-800 text-gray-300"
+                theme === "light"
+                  ? "bg-white text-gray-600"
+                  : "bg-gray-800 text-gray-300"
               }`}
             >
               Hobby
@@ -384,12 +474,20 @@ export default function StudentForm({ theme }: StudentFormProps) {
             <div className="flex gap-6">
               {["Reading", "Sports", "Music", "No Choice"].map((h) => (
                 <label key={h} className="flex items-center gap-2">
-                  <input type="checkbox" name="hobby" value={h} onChange={getHobby} checked={hobby.includes(h)} />
+                  <input
+                    type="checkbox"
+                    name="hobby"
+                    value={h}
+                    onChange={getHobby}
+                    checked={hobby.includes(h)}
+                  />
                   {h}
                 </label>
               ))}
             </div>
-            {errors.hobby && <p className="text-red-500 text-sm mt-2">{errors.hobby}</p>}
+            {errors.hobby && (
+              <p className="text-red-500 text-sm mt-2">{errors.hobby}</p>
+            )}
           </fieldset>
         </div>
 
@@ -399,7 +497,9 @@ export default function StudentForm({ theme }: StudentFormProps) {
             value={city}
             onChange={(e) => handleChange("city", e.target.value, setCity)}
             className={`block w-full rounded-xl px-3 pt-5 pb-2 outline-none ${
-              theme === "light" ? "border border-gray-300 bg-white text-gray-900" : "border border-gray-600 bg-gray-800 text-white"
+              theme === "light"
+                ? "border border-gray-300 bg-white text-gray-900"
+                : "border border-gray-600 bg-gray-800 text-white"
             } ${errors.city ? "border-red-500" : ""}`}
           >
             <option value="" hidden></option>
@@ -411,20 +511,24 @@ export default function StudentForm({ theme }: StudentFormProps) {
           </select>
           <label
             htmlFor="city"
-            className={`absolute left-3 ${city ? "top-2 text-sm" : "top-4 text-base"} ${
-              theme === "light" ? "text-gray-500" : "text-gray-300"
-            }`}
+            className={`absolute left-3 ${
+              city ? "top-2 text-sm" : "top-4 text-base"
+            } ${theme === "light" ? "text-gray-500" : "text-gray-300"}`}
           >
             City
           </label>
-          {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+          {errors.city && (
+            <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+          )}
         </div>
 
         <InputField
           id="address"
           label="Address"
           value={address}
-          onChange={(e: any) => handleChange("address", e.target.value.slice(0, 200), setAddress)}
+          onChange={(e: any) =>
+            handleChange("address", e.target.value.slice(0, 200), setAddress)
+          }
           error={errors.address}
           textarea
           theme={theme}
@@ -435,7 +539,7 @@ export default function StudentForm({ theme }: StudentFormProps) {
             type="submit"
             className="px-6 py-3 rounded-xl bg-blue-900 text-white font-semibold shadow-md hover:bg-yellow-500 hover:text-blue-900 transition"
           >
-            Register
+            {editIndex !== null ? "Update Student" : "Register"}
           </button>
         </div>
       </form>
@@ -443,7 +547,9 @@ export default function StudentForm({ theme }: StudentFormProps) {
       {students.length > 0 && (
         <div
           className={`mt-12 w-full max-w-6xl shadow-xl rounded-xl overflow-hidden border ${
-            theme === "light" ? "bg-white border-gray-200" : "bg-gray-800 border-gray-700"
+            theme === "light"
+              ? "bg-white border-gray-200"
+              : "bg-gray-800 border-gray-700"
           }`}
         >
           <h3
@@ -455,7 +561,9 @@ export default function StudentForm({ theme }: StudentFormProps) {
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
-              <thead className={theme === "light" ? "bg-gray-200" : "bg-gray-700"}>
+              <thead
+                className={theme === "light" ? "bg-gray-200" : "bg-gray-700"}
+              >
                 <tr>
                   {[
                     "First Name",
@@ -482,7 +590,11 @@ export default function StudentForm({ theme }: StudentFormProps) {
                 {students.map((s, i) => (
                   <tr
                     key={i}
-                    className={`text-center ${theme === "light" ? "hover:bg-gray-100" : "hover:bg-gray-700"}`}
+                    className={`text-center ${
+                      theme === "light"
+                        ? "hover:bg-gray-100"
+                        : "hover:bg-gray-700"
+                    }`}
                   >
                     <td className="px-4 py-2 border">{s.firstName}</td>
                     <td className="px-4 py-2 border">{s.lastName}</td>
@@ -495,10 +607,20 @@ export default function StudentForm({ theme }: StudentFormProps) {
                     <td className="px-4 py-2 border">{s.city}</td>
                     <td className="px-4 py-2 border">{s.address}</td>
                     <td className="px-4 py-2 border">
-                      <a className="px-3 py-1 text-sm rounded bg-yellow-500 text-white hover:bg-yellow-600">Edit</a>
+                      <button
+                        onClick={() => handleEdit(i)}
+                        className="px-3 py-1 text-sm rounded bg-yellow-500 text-white hover:bg-yellow-600"
+                      >
+                        Edit
+                      </button>
                     </td>
                     <td className="px-4 py-2 border">
-                      <a className="px-3 py-1 text-sm rounded bg-red-500 text-white hover:bg-red-600">Delete</a>
+                      <button
+                        onClick={() => handleDelete(i)}
+                        className="px-3 py-1 text-sm rounded bg-red-500 text-white hover:bg-red-600"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Navbar from "./components/navbar";
 import StudentForm from "./components/studentForm";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -24,6 +26,7 @@ export default function App() {
       <div className="pt-18">
         <StudentForm theme={theme} />
       </div>
+      <ToastContainer position="top-right" autoClose={2000} />
     </div>
   );
 }
