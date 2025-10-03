@@ -134,7 +134,7 @@ export default function StudentForm({ theme }: StudentFormProps) {
   ];
 
   const getFieldError = (field: string, value: any) => {
-    const nameRegex = /^[A-Za-z]{2,10}$/; // 2–10 letters
+    const nameRegex = /^[A-Za-z]{2,10}$/;
     switch (field) {
       case "firstName":
         return nameRegex.test(value)
